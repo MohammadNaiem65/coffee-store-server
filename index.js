@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -29,11 +29,45 @@ async function run() {
 		const coffeeCollection = client.db('coffeeShop').collection('coffees');
 
 		// * Routes Setup
-		
+		app.get('/', async (req, res) => {
+			const result = await coffeeCollection.find().toArray();
+			res.send(result);
+		});
 
 		app.post('/coffee', async (req, res) => {
 			const coffeeData = req.body;
 			const result = await coffeeCollection.insertOne(coffeeData);
+			res.send(result);
+		});
+
+		app.delete('/coffee/:id', async (req, res) => {
+			const id = new ObjectId(req.params.id);
+			const result = await coffeeCollection.deleteOne({
+				_id: id,
+			});
+			res.send(result);
+		});
+
+		app.get('/updateCoffee/:id', async (req, res) => {
+			const id = req.params.id;
+			const result = await coffeeCollection.findOne({
+				_id: new ObjectId(id),
+			});
+			res.send(result);
+		});
+
+		app.put('/updateCoffee/:id', async (req, res) => {
+			const id = new ObjectId(req.params.id);
+			const previousCoffee = req.body;
+			const updatedCoffee = { ...req.body };
+			console.log(req.body, previousCoffee);
+
+			const filter = { _id: id };
+			const coffee = {
+				$set: { ...updatedCoffee },
+			};
+
+			const result = await coffeeCollection.updateOne(filter, coffee);
 			res.send(result);
 		});
 
@@ -46,6 +80,7 @@ async function run() {
 		console.log(err);
 	}
 }
+
 run().catch(console.dir);
 
 // listening the app
