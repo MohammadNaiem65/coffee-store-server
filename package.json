@@ -1,10 +1,13 @@
 {
-  "name": "coffee-store-server",
+  "name": "car-doctor",
   "version": "1.0.0",
   "main": "index.js",
+  "repository": "https://github.com/MohammadNaiem65/mongodb-basic-intermediate-server.git",
+  "author": "MohammadNaiem65 <mohammadnaiem661065@gmail.comm>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index"
+    "start": "node index",
+    "test": "nodemon index"
   },
   "dependencies": {
     "cors": "^2.8.5",
